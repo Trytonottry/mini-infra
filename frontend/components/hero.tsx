@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 export default function Hero() {
   return (
     <section className="min-h-screen flex flex-col justify-center items-center px-8">
@@ -6,7 +8,7 @@ export default function Hero() {
           PRIVATE INFRASTRUCTURE PLATFORM
         </div>
 
-        <h1 className="text-7xl font-bold leading-tight mb-8">
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-8">
           Infrastructure tools
           <br />
           for modern operators.
@@ -17,14 +19,14 @@ export default function Hero() {
           Telegram-native infrastructure management.
         </p>
 
-        <div className="flex gap-4 justify-center">
-          <button className="bg-white text-black px-8 py-4 rounded-xl font-semibold">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link href="/vpn" className="bg-white text-black px-8 py-4 rounded-xl font-semibold inline-flex items-center justify-center">
             Start Free Trial
-          </button>
+          </Link>
 
-          <button className="border border-zinc-700 px-8 py-4 rounded-xl">
+          <Link href="/dashboard" className="border border-zinc-700 px-8 py-4 rounded-xl inline-flex items-center justify-center">
             Open Dashboard
-          </button>
+          </Link>
         </div>
       </div>
     </section>

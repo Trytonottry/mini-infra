@@ -15,6 +15,9 @@ export default function AnalyzerPage() {
   const [result, setResult] = useState<AnalyzeResult | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [notice, setNotice] = useState('')
+
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'
 
   async function analyze() {
 
@@ -26,14 +29,16 @@ export default function AnalyzerPage() {
     setLoading(true)
     setError('')
     setResult(null)
+    setNotice('')
 
     try {
 
       const response = await axios.post(
-        'http://localhost:8000/analyzer/analyze',
+        `${apiBaseUrl}/analyzer/analyze`,
         {
           content: log
-        }
+        },
+        { timeout: 30000 }
       )
 
       setResult(response.data)
@@ -50,6 +55,24 @@ export default function AnalyzerPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  function saveReport() {
+    if (!result) return
+    localStorage.setItem('analyzer:last-report', JSON.stringify({ createdAt: new Date().toISOString(), log, result }))
+    setNotice('Report saved locally in your browser.')
+  }
+
+  function exportJson() {
+    if (!result) return
+    const blob = new Blob([JSON.stringify({ log, result }, null, 2)], { type: 'application/json' })
+    const href = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = href
+    a.download = `analyzer-report-${Date.now()}.json`
+    a.click()
+    URL.revokeObjectURL(href)
+    setNotice('JSON exported successfully.')
   }
 
   return (
@@ -133,6 +156,12 @@ SMART failure predicted
               </div>
             )}
 
+            {notice && (
+              <div className="mt-4 border border-emerald-900 bg-emerald-950/30 text-emerald-400 rounded-xl p-4">
+                {notice}
+              </div>
+            )}
+
             <div className="mt-6 flex gap-4">
 
               <button
@@ -160,6 +189,7 @@ SMART failure predicted
                   setLog('')
                   setResult(null)
                   setError('')
+                  setNotice('')
                 }}
                 className="
                   border
@@ -304,7 +334,7 @@ SMART failure predicted
                       py-3
                       rounded-xl
                       font-semibold
-                    ">
+                    " onClick={saveReport}>
                       Save Report
                     </button>
 
@@ -314,7 +344,7 @@ SMART failure predicted
                       px-6
                       py-3
                       rounded-xl
-                    ">
+                    " onClick={exportJson}>
                       Export JSON
                     </button>
                   </div>
