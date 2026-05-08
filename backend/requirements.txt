@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+python-jose
+passlib
+python-multipart
+requests
+httpx
+redis
+pydantic-settings

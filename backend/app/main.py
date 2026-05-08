@@ -1,0 +1,31 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.routers import analyzer
+from app.routers import vpn
+from app.routers import auth
+
+app = FastAPI(
+    title="Infra Platform API",
+    version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(auth.router)
+app.include_router(vpn.router)
+app.include_router(analyzer.router)
+
+
+@app.get("/")
+async def root():
+    return {
+        "status": "ok",
+        "service": "infra-platform-api"
+    }
